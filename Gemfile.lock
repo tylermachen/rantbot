@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    sentimental (1.0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  sentimental
