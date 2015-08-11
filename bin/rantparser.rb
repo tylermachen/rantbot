@@ -1,3 +1,4 @@
+require 'rest-client'
 require 'sentimental'
 require_relative '../phrases'
 require 'pry'
@@ -71,4 +72,12 @@ class RantParser
   end
 end
 
-rantbot = RantParser.new.run
+# rantbot = RantParser.new.run
+
+def create_playlist_hash
+  url = 'https://api.spotify.com/v1/search?type=playlist&q=happy'
+  # get the data from spotify's api
+  spotify_json = RestClient.get(url)
+  # make it readable by parsing it to json
+  parsed = JSON.parse(spotify_json)
+end
