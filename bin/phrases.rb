@@ -24,10 +24,3 @@ module Phrases
     end
   end
 end
-
- # moods:
- # "happy"
- # "angry"
- # "sad"
- # "relaxing"
- # "excited"
