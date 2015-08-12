@@ -4,6 +4,7 @@ require 'nokogiri'
 require 'open-uri'
 require_relative './phrases'
 require 'pry'
+require 'launchy'
 
 class RantParser
   include Phrases::InstanceMethods
