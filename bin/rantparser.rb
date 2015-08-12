@@ -60,13 +60,18 @@ class RantParser
         when 'off' then off
         when 'export' then export
         when 'insults' then insults
+        when 'exit' then off
         else @sentiment = get_sentiment(input)
              puts "\n"
              insult = get_insults
              puts insult
+             puts "\n"
              @@insults << insult
              @@rants[@sentiment] << input
+             analyze_hash if @@insults.count == 5
+
       end
+
     end
   end
 
@@ -145,14 +150,16 @@ require 'pry'
 def analyze_hash
   hash = create_playlist_hash
 
-    hash.values.first["items"].each do |playlist|
-        name = playlist["name"]
-        image_link = playlist["images"].first["url"]
-        playlist_link = playlist["external_urls"]["spotify"]
-        track_count = playlist["tracks"]["total"]
+    hash.values.first["items"].shuffle.each do |playlist|
+        @name = playlist["name"]
+        @playlist_link = playlist["external_urls"]["spotify"]
+        @track_count = playlist["tracks"]["total"]
         # playlist_link = playlist["external_urls"].values.first
-      binding.pry
   end
+  puts "Ok ok, that was a little mean.\nHere's a playlist with #{@track_count} songs to cheer you up.\n\n"
+  puts "#{@name}"
+  puts "#{@playlist_link}"
+
 end
 
 rantbot = RantParser.new.run
