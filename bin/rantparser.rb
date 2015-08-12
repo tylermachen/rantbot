@@ -11,26 +11,32 @@ class RantParser
 
   @@rants = {
     :positive => [],
-    :neutral => [],
-    :negative => []
+    :negative => [],
+    :neutral => []
   }
+
+  @@prompt = "> "
 
   def initialize
     @analyzer = Sentimental.new
     Sentimental.load_defaults
     Sentimental.threshold = 0.0
     @power = "on"
-    @commands = ["help", "list", "off"]
+    @commands = ["help", "list", "off", "export"]
   end
 
   def help
+    puts "\n"
     puts "Rantbot accepts the following commands:"
-    puts "- help : displays this help menu"
-    puts "- list : displays a list of all of your rants"
-    puts "- off : turns off Rantbot"
+    puts "- help   : displays this help menu"
+    puts "- list   : displays a list of all of your rants"
+    puts "- export : exports your rants to a text file"
+    puts "- off    : turns off Rantbot"
   end
 
   def welcome
+    puts "RantBot knows how you feel and knows how to make your day better."
+    puts "\n"
     puts '*---------------*'
     puts '│    RANTBOT    │'
     puts '│      ["]      │'
@@ -43,13 +49,16 @@ class RantParser
     welcome
     help
     until @power == "off"
-      puts "Rant away..."
+      puts "\nRant away..."
+      print @@prompt
       input = get_user_input
       case input
         when 'help' then help
         when 'list' then list
         when 'off' then off
+        when 'export' then export
         else @sentiment = get_sentiment(input)
+             puts "\n"
              puts return_phrase(@sentiment)
              @@rants[@sentiment] << input
       end
@@ -65,14 +74,48 @@ class RantParser
   end
 
   def off
-    puts "Talk to you never."
+    puts "\nTalk to you never.\n\n"
     @power = "off"
     abort
   end
 
-  def list
-    puts @@rants
+  def export
+    File.open('./rants/my-rants.txt', 'w') do |file|
+      file.puts "MY RANTS"
+      file.puts "---------------------"
+      @@rants.each do |key, value|
+        unless value.empty?
+          file.puts "---------------------"
+          file.puts "   #{key.capitalize} Rant"
+          file.puts "---------------------"
+          value.each do |rant|
+            file.print "#{rant.capitalize}. "
+          end
+          file.puts "\n\n"
+        end
+      end
+    end
   end
+
+  def list
+    @@rants.each do |key, value|
+      unless value.empty?
+        puts "---------------------"
+        puts "   #{key.capitalize} Rant"
+        puts "---------------------"
+        value.each do |rant|
+          print "#{rant.capitalize}. "
+        end
+        puts "\n\n"
+      end
+    end
+  end
+end
+
+def get_insults
+  url = ""
+  html = open(url).read
+  doc = Nokogiri::HTML(html)
 end
 
 def create_playlist_hash
@@ -86,6 +129,7 @@ end
 require 'pry'
 def analyze_hash
   hash = create_playlist_hash
+
     hash.values.first["items"].each do |playlist|
         name = playlist["name"]
         image_link = playlist["images"].first["url"]
@@ -96,32 +140,4 @@ def analyze_hash
   end
 end
 
-analyze_hash
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def analyze_hash
-#   hash = create_playlist_hash
-#   hash.values.first["items"].each do |playlist|
-#     name = playlist["name"]
-#     link = playlist["external_urls"].values.first
-#     track_count = playlist["tracks"]["total"]
-#     image_link = playlist["images"].first["url"]
-#     # binding.pry
-#   end
-# end
-# analyze_hash
-
-# rantbot = RantParser.new.run
+rantbot = RantParser.new.run
