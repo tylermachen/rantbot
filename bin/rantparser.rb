@@ -1,6 +1,6 @@
 require 'rest-client'
 require 'sentimental'
-require_relative '../phrases'
+require_relative './phrases'
 require 'pry'
 
 class RantParser
@@ -73,7 +73,7 @@ class RantParser
 end
 
 def create_playlist_hash
-  url = "https://api.spotify.com/v1/search?type=playlist&q=#{mood}"
+  url = "https://api.spotify.com/v1/search?type=playlist&q=happy"
   # get the data from spotify's api
   spotify_json = RestClient.get(url)
   # make it readable by parsing it to json
@@ -86,6 +86,7 @@ def analyze_hash
     name = playlist["name"]
     link = playlist["external_urls"].values.first
     track_count = playlist["tracks"]["total"]
+    image_link = playlist["images"].first["url"]
     binding.pry
   end
 end
