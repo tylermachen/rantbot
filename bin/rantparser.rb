@@ -1,5 +1,8 @@
 require 'rest-client'
 require 'sentimental'
+require 'nokogiri'
+require 'open-uri'
+
 require_relative './phrases'
 require 'pry'
 
@@ -80,16 +83,45 @@ def create_playlist_hash
   JSON.parse(spotify_json)
 end
 
+require 'pry'
 def analyze_hash
   hash = create_playlist_hash
-  hash.values.first["items"].each do |playlist|
-    name = playlist["name"]
-    link = playlist["external_urls"].values.first
-    track_count = playlist["tracks"]["total"]
-    image_link = playlist["images"].first["url"]
-    binding.pry
+    hash.values.first["items"].each do |playlist|
+        name = playlist["name"]
+        image_link = playlist["images"].first["url"]
+        playlist_link = playlist["external_urls"]["spotify"]
+        track_count = playlist["tracks"]["total"]
+        # playlist_link = playlist["external_urls"].values.first
+      binding.pry
   end
 end
+
 analyze_hash
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def analyze_hash
+#   hash = create_playlist_hash
+#   hash.values.first["items"].each do |playlist|
+#     name = playlist["name"]
+#     link = playlist["external_urls"].values.first
+#     track_count = playlist["tracks"]["total"]
+#     image_link = playlist["images"].first["url"]
+#     # binding.pry
+#   end
+# end
+# analyze_hash
 
 # rantbot = RantParser.new.run
