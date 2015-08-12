@@ -2,11 +2,13 @@ require 'rest-client'
 require 'sentimental'
 require 'nokogiri'
 require 'open-uri'
+
 require_relative './phrases'
 require 'pry'
 require 'launchy'
 
 class RantParser
+
   include Phrases::InstanceMethods
 
   @@rants = {
@@ -14,7 +16,7 @@ class RantParser
     :negative => [],
     :neutral => []
   }
-
+  @@insults = []
   @@prompt = "> "
 
   def initialize
@@ -22,7 +24,7 @@ class RantParser
     Sentimental.load_defaults
     Sentimental.threshold = 0.0
     @power = "on"
-    @commands = ["help", "list", "off", "export"]
+    # @commands = ["help", "list", "off", "export", "insults"]
   end
 
   def help
@@ -31,6 +33,7 @@ class RantParser
     puts "- help   : displays this help menu"
     puts "- list   : displays a list of all of your rants"
     puts "- export : exports your rants to a text file"
+    puts "- insults: shows you what you deserve"
     puts "- off    : turns off Rantbot"
   end
 
@@ -57,13 +60,26 @@ class RantParser
         when 'list' then list
         when 'off' then off
         when 'export' then export
+        when 'insults' then insults
+        when 'exit' then off
         else @sentiment = get_sentiment(input)
              puts "\n"
-             puts return_phrase(@sentiment)
+             insult = get_insults
+             puts insult
+             puts "\n"
+             @@insults << insult
              @@rants[@sentiment] << input
+             analyze_hash if @@insults.count == 5
+
       end
+
     end
   end
+
+  def insults
+    puts @@insults
+  end
+
 
   def get_sentiment(input)
     @analyzer.get_sentiment(input)
@@ -113,10 +129,15 @@ class RantParser
 end
 
 def get_insults
-  url = ""
+  url = "http://www.insultgenerator.org/"
   html = open(url).read
   doc = Nokogiri::HTML(html)
+
+  insult = doc.css("div.wrap").text
+  # binding.pry
 end
+
+
 
 def create_playlist_hash
   url = "https://api.spotify.com/v1/search?type=playlist&q=happy"
@@ -126,14 +147,20 @@ def create_playlist_hash
   JSON.parse(spotify_json)
 end
 
+require 'pry'
 def analyze_hash
   hash = create_playlist_hash
-  hash.values.first["items"].each do |playlist|
-    name = playlist["name"]
-    link = playlist["external_urls"].values.first
-    track_count = playlist["tracks"]["total"]
-    image_link = playlist["images"].first["url"]
+
+    hash.values.first["items"].shuffle.each do |playlist|
+        @name = playlist["name"]
+        @playlist_link = playlist["external_urls"]["spotify"]
+        @track_count = playlist["tracks"]["total"]
+        # playlist_link = playlist["external_urls"].values.first
   end
+  puts "Ok ok, that was a little mean.\nHere's a playlist with #{@track_count} songs to cheer you up.\n\n"
+  puts "#{@name}"
+  puts "#{@playlist_link}"
+
 end
 
 rantbot = RantParser.new.run
