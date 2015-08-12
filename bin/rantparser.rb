@@ -7,6 +7,7 @@ require_relative './phrases'
 require 'pry'
 
 class RantParser
+
   include Phrases::InstanceMethods
 
   @@rants = {
@@ -14,7 +15,7 @@ class RantParser
     :negative => [],
     :neutral => []
   }
-
+  @@insults = []
   @@prompt = "> "
 
   def initialize
@@ -22,7 +23,7 @@ class RantParser
     Sentimental.load_defaults
     Sentimental.threshold = 0.0
     @power = "on"
-    @commands = ["help", "list", "off", "export"]
+    # @commands = ["help", "list", "off", "export", "insults"]
   end
 
   def help
@@ -31,6 +32,7 @@ class RantParser
     puts "- help   : displays this help menu"
     puts "- list   : displays a list of all of your rants"
     puts "- export : exports your rants to a text file"
+    puts "- insults: shows you what you deserve"
     puts "- off    : turns off Rantbot"
   end
 
@@ -57,13 +59,21 @@ class RantParser
         when 'list' then list
         when 'off' then off
         when 'export' then export
+        when 'insults' then insults
         else @sentiment = get_sentiment(input)
              puts "\n"
-             puts return_phrase(@sentiment)
+             insult = get_insults
+             puts insult
+             @@insults << insult
              @@rants[@sentiment] << input
       end
     end
   end
+
+  def insults
+    puts @@insults
+  end
+
 
   def get_sentiment(input)
     @analyzer.get_sentiment(input)
@@ -113,10 +123,15 @@ class RantParser
 end
 
 def get_insults
-  url = ""
+  url = "http://www.insultgenerator.org/"
   html = open(url).read
   doc = Nokogiri::HTML(html)
+
+  insult = doc.css("div.wrap").text
+  # binding.pry
 end
+
+
 
 def create_playlist_hash
   url = "https://api.spotify.com/v1/search?type=playlist&q=happy"
