@@ -75,16 +75,27 @@ class RantBot
 
   def show_love
     if (1..2).include?(@random_num)
-      playlist_link = return_spotify_link
-      Launchy.open("#{playlist_link}")
+      return_spotify_link
     elsif (4..5).include?(@random_num)
-      gifs = return_gif_hash
-      gif_url = gifs.values.shuffle.first.shuffle.first
-      Launchy.open("#{gif_url}")
+      return_gif
     elsif (5..6).include?(@random_num)
-      youtube_url = "https://www.youtube.com/embed/s2RLgY_Z8To"
-      Launchy.open("#{youtube_url}")
+      return_youtube
     end
+  end
+
+  def return_gif
+    puts "\nGet over yourself. Here..."
+    sleep(SLEEP_DURATION)
+    gifs = return_gif_hash
+    gif_url = gifs.values.shuffle.first.shuffle.first
+    Launchy.open("#{gif_url}")
+  end
+
+  def return_youtube
+    puts "\nAlright alright, here's something you'll enjoy..."
+    sleep(SLEEP_DURATION)
+    youtube_url = "https://www.youtube.com/embed/s2RLgY_Z8To"
+    Launchy.open("#{youtube_url}")
   end
 
   def create_playlist_hash
@@ -93,33 +104,22 @@ class RantBot
     JSON.parse(spotify_json)
   end
 
-  def return_spotify_link
+  def return_spotify
     hash = create_playlist_hash
     hash.values.first["items"].shuffle.each do |playlist|
         @name = playlist["name"]
         @playlist_link = playlist["external_urls"]["spotify"]
         @track_count = playlist["tracks"]["total"]
     end
-    sleep(SLEEP_DURATION)
     puts "\nOkay okay, that was a little mean..."
     sleep(SLEEP_DURATION)
     puts "\nHere's a playlist with " +
          "#{@track_count} songs to cheer you up!"
     puts "\n#{@name.capitalize} Playlist:"
     puts "#{@playlist_link}"
-    @playlist_link
+    Launchy.open("#{@playlist_link}")
   end
-=begin
-  def apologize()
-    sleep(SLEEP_DURATION)
-    puts "\nOkay okay, that was a little mean..."
-    sleep(SLEEP_DURATION)
-    puts "\nHere's a playlist with " +
-         "#{track_count} songs to cheer you up!"
-    puts "\n#{name.capitalize}"
-    puts "#{playlist_link}"
-  end
-=end
+
   def export
     File.open('./rants/my-rants.txt', 'w') do |file|
       file.puts "MY RANTS"
