@@ -67,7 +67,7 @@ class RantBot
   def show_love
     if (1..2).include?(@random_num)
       return_spotify
-    elsif (4..5).include?(@random_num)
+    elsif (3..4).include?(@random_num)
       return_gif
     elsif (5..6).include?(@random_num)
       return_youtube
@@ -79,7 +79,6 @@ class RantBot
     sleep(SLEEP_DURATION)
     gifs = return_gif_hash
     gif_url = gifs.values.sample.shuffle.sample
-    binding.pry
     Launchy.open("#{gif_url}")
   end
 
