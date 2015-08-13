@@ -1,5 +1,5 @@
 require_relative '../config/environment.rb'
-
+require 'pry'
 class RantBot
   include HashData::InstanceMethods
   PROMPT = "> "
@@ -78,7 +78,8 @@ class RantBot
     puts "\nGet over yourself. Here..."
     sleep(SLEEP_DURATION)
     gifs = return_gif_hash
-    gif_url = gifs.values.shuffle.first.shuffle.first
+    gif_url = gifs.values.sample.shuffle.sample
+    binding.pry
     Launchy.open("#{gif_url}")
   end
 
