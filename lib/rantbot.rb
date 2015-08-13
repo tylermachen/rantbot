@@ -1,5 +1,5 @@
 require_relative '../config/environment.rb'
-require 'pry'
+
 class RantBot
   include HashData::InstanceMethods
   PROMPT = "> "
