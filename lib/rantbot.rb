@@ -209,5 +209,3 @@ class RantBot
     abort
   end
 end
-
-rantbot = RantBot.new.run
