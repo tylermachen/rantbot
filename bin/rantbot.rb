@@ -1,5 +1,4 @@
 require_relative '../config/environment.rb'
-require 'pry'
 
 class RantBot
   include HashData::InstanceMethods
@@ -15,11 +14,7 @@ class RantBot
     @insult_counter = 0
     @random_num = get_random_num
     @insults = []
-    @rants = {
-      :positive => [],
-      :negative => [],
-      :neutral => []
-    }
+    @rants = []
   end
 
   def run
@@ -31,14 +26,13 @@ class RantBot
       input = get_user_input
       case input
         when 'help' then help
-        when 'list' then list
+        when 'rant' then rant
         when 'look' then look_at_rantbot
         when 'off' then off
         when 'export' then export
         when 'insults' then display_insults
         when 'exit' then off
-        else @sentiment = get_sentiment(input)
-             @rants[@sentiment] << input
+        else @rants << input
              return_insult
              if @insult_counter == INSULT_LIMIT
                show_love
@@ -65,9 +59,9 @@ class RantBot
     puts "---------------------------------------"
     puts "- off     : turns off Rantbot"
     puts "- help    : displays this help menu"
-    puts "- list    : displays a list of all of your rants"
+    puts "- rant    : displays your entire rant"
     puts "- look    : look at RantBot"
-    puts "- export  : exports your rants to a text file"
+    puts "- export  : exports your rant to a text file"
     puts "- insults : shows you what you deserve..."
   end
 
@@ -120,40 +114,33 @@ class RantBot
   end
 
   def export
-    File.open('./rants/my-rants.txt', 'w') do |file|
-      file.puts "MY RANTS"
-      file.puts "---------------------"
-      @rants.each do |key, value|
-        unless value.empty?
-          file.puts "---------------------"
-          file.puts "   #{key.capitalize} Rant"
-          file.puts "---------------------"
-          value.each do |rant|
+    if @rants.count > 0
+      File.open('./rants/my-rants.txt', 'w') do |file|
+        file.puts "\n*---------------------*"
+        file.puts "│      Your Rant      │"
+        file.puts "*---------------------*\n\n"
+        @rants.each do |rant|
             file.print "#{rant.capitalize}. "
-          end
-          file.puts "\n\n"
         end
+        file.puts "\n"
+        puts "\nExporting...\n\n"
+        sleep(SLEEP_DURATION)
+        puts "All done!"
       end
+    else
+      puts "\nThere is nothing to export yet."
     end
-    puts "\nExporting...\n\n"
-    sleep(SLEEP_DURATION)
-    puts "All done!"
   end
 
-  def list
-    if @rants.values[0].count > 0 || @rants.values[1].count > 0 ||
-       @rants.values[2].count > 0
-      @rants.each do |key, value|
-        unless value.empty?
-          puts "---------------------"
-          puts "   #{key.capitalize} Rant"
-          puts "---------------------"
-          value.each do |rant|
-            print "#{rant.capitalize}. "
-          end
-          puts "\n\n"
-        end
+  def rant
+    if @rants.count > 0
+      puts "\n*---------------------*"
+      puts "│      Your Rant      │"
+      puts "*---------------------*\n\n"
+      @rants.each do |rant|
+          print "#{rant.capitalize}. "
       end
+      puts "\n"
     else
       puts "\nYou have not ranted yet."
     end
@@ -180,7 +167,7 @@ class RantBot
   def display_insults
     if @insults.count > 0
       puts "\n*---------------------------------*"
-      puts "|     Just In Case You Forgot...  |"
+      puts "│    Just In Case You Forgot...   │"
       puts "*---------------------------------*\n\n"
       @insults.each do |insult|
         puts "- #{insult}\n\n"

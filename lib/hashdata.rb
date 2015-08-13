@@ -46,7 +46,8 @@ module HashData
                 "I took a souvenir.",
                 "Did you know I'm utterly insane?",
                 "A boy's best friend is his mother.",
-                "I'm deeply disturbed by myself."]
+                "I'm deeply disturbed by myself.",
+                "I'm never going back."]
     end
   end
 end
