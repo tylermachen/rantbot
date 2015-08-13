@@ -1,3 +1,8 @@
 # RantBot
 
-RantBot knows how you feel and offers suggestions to make your day better.
+     RANTBOT  
+       ["]
+      /[♥]\   
+       ] [  
+
+Tell RantBot how you feel and he'll make your day better!
