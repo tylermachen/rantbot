@@ -1,9 +1,4 @@
-require 'rest-client'
-require 'sentimental'
-require 'nokogiri'
-require 'open-uri'
-require 'launchy'
-require_relative '../lib/hashdata'
+require_relative '../config/environment.rb'
 require 'pry'
 
 class RantBot
@@ -37,9 +32,10 @@ class RantBot
       case input
         when 'help' then help
         when 'list' then list
+        when 'look' then look_at_rantbot
         when 'off' then off
         when 'export' then export
-        when 'insults' then insults
+        when 'insults' then display_insults
         when 'exit' then off
         else @sentiment = get_sentiment(input)
              @rants[@sentiment] << input
@@ -54,28 +50,30 @@ class RantBot
   end
 
   def welcome
+    puts "\n*~--------------------------------------~*"
+    puts "│                RANTBOT                 │"
+    puts '│                  ["]                   │'
+    puts '│                 /[♥]\                  │'
+    puts "│                  ] [                   │"
+    puts "*~--------------------------------------~*"
     puts "\nHey friend, I'm RantBot."
     puts "Tell me how you feel and I'll make your day better!\n"
-    puts '*---------------------------------------*'
-    puts '│                RANTBOT                │'
-    puts '│                  ["]                  │'
-    puts '│                 /[_]\                 │'
-    puts '│                  ] [                  │'
-    puts '*---------------------------------------*'
   end
 
   def help
     puts "\nRantbot accepts the following commands:"
+    puts "---------------------------------------"
     puts "- off     : turns off Rantbot"
     puts "- help    : displays this help menu"
     puts "- list    : displays a list of all of your rants"
+    puts "- look    : look at RantBot"
     puts "- export  : exports your rants to a text file"
     puts "- insults : shows you what you deserve..."
   end
 
   def show_love
     if (1..2).include?(@random_num)
-      return_spotify_link
+      return_spotify
     elsif (4..5).include?(@random_num)
       return_gif
     elsif (5..6).include?(@random_num)
@@ -111,12 +109,13 @@ class RantBot
         @playlist_link = playlist["external_urls"]["spotify"]
         @track_count = playlist["tracks"]["total"]
     end
-    puts "\nOkay okay, that was a little mean..."
+    puts "\nOkay okay, that was a little harsh..."
     sleep(SLEEP_DURATION)
     puts "\nHere's a playlist with " +
          "#{@track_count} songs to cheer you up!"
-    puts "\n#{@name.capitalize} Playlist:"
+    puts "\n#{@name.capitalize} playlist:"
     puts "#{@playlist_link}"
+    sleep(SLEEP_DURATION)
     Launchy.open("#{@playlist_link}")
   end
 
@@ -142,16 +141,21 @@ class RantBot
   end
 
   def list
-    @rants.each do |key, value|
-      unless value.empty?
-        puts "---------------------"
-        puts "   #{key.capitalize} Rant"
-        puts "---------------------"
-        value.each do |rant|
-          print "#{rant.capitalize}. "
+    if @rants.values[0].count > 0 || @rants.values[1].count > 0 ||
+       @rants.values[2].count > 0
+      @rants.each do |key, value|
+        unless value.empty?
+          puts "---------------------"
+          puts "   #{key.capitalize} Rant"
+          puts "---------------------"
+          value.each do |rant|
+            print "#{rant.capitalize}. "
+          end
+          puts "\n\n"
         end
-        puts "\n\n"
       end
+    else
+      puts "\nYou have not ranted yet."
     end
   end
 
@@ -173,12 +177,29 @@ class RantBot
     rand(1..6)
   end
 
-  def insults
-    @insults
+  def display_insults
+    if @insults.count > 0
+      puts "\n*---------------------------------*"
+      puts "|     Just In Case You Forgot...  |"
+      puts "*---------------------------------*\n\n"
+      @insults.each do |insult|
+        puts "- #{insult}\n\n"
+      end
+    else
+      puts "\nYou have not been insulted yet."
+    end
   end
 
   def get_sentiment(input)
     @analyzer.get_sentiment(input)
+  end
+
+  def look_at_rantbot
+    quote = return_rantbot_quote.sample
+    puts "\n            RANTBOT  "
+    puts '              ["]    '
+    puts '             /[♥]\   '
+    puts "              ] [    - #{quote}"
   end
 
   def off

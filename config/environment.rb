@@ -1,0 +1,6 @@
+require 'rest-client'
+require 'sentimental'
+require 'nokogiri'
+require 'open-uri'
+require 'launchy'
+require_relative '../lib/hashdata'

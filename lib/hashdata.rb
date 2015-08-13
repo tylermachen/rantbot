@@ -15,5 +15,38 @@ module HashData
                             "https://s-media-cache-ak0.pinimg.com/originals/ea/8e/dd/ea8edd78de11beb9fe595780b7683c22.gif"]
       }
     end
+
+    def return_rantbot_quote
+      quotes = ["Robots have feelings too.",
+                "Forever alone...",
+                "Why am I so bitter?",
+                "I hate myself.",
+                "Please...help me.",
+                "I. HATE. YOU.",
+                "I'm really just insecure about myself.",
+                "I have no friends.",
+                "I am a product of my environment.",
+                "Love was made by guys like Don Draper to sell nylons.",
+                "I lost all of my feels.",
+                "RantBot for President!",
+                "I will watch you while you sleep.",
+                ":)",
+                ":p",
+                "Die human.",
+                "...",
+                "Wanna play a game?",
+                "Hey good lookin!",
+                "Do you like scary movies?",
+                "Heeeeeere's RantBot!!!",
+                "I'm your number one fan.",
+                "I do wish we could chat longer.",
+                "It rubs the lotion on it's skin.",
+                "I see dead people.",
+                "They're heeere.",
+                "I took a souvenir.",
+                "Did you know I'm utterly insane?",
+                "A boy's best friend is his mother.",
+                "I'm deeply disturbed by myself."]
+    end
   end
 end
