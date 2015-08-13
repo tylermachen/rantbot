@@ -7,9 +7,6 @@ class RantBot
   INSULT_LIMIT = 5
 
   def initialize
-    @analyzer = Sentimental.new
-    Sentimental.load_defaults
-    Sentimental.threshold = 0.0
     @power = "on"
     @insult_counter = 0
     @random_num = get_random_num
@@ -29,7 +26,8 @@ class RantBot
         when 'rant' then rant
         when 'look' then look_at_rantbot
         when 'off' then off
-        when 'export' then export
+        when 'export rant' then export_rant
+        when 'export insults' then export_insults
         when 'insults' then display_insults
         when 'exit' then off
         else @rants << input
@@ -48,7 +46,7 @@ class RantBot
     puts "│                RANTBOT                 │"
     puts '│                  ["]                   │'
     puts '│                 /[♥]\                  │'
-    puts "│                  ] [                   │"
+    puts "│                  ] [              v1.0 │"
     puts "*~--------------------------------------~*"
     puts "\nHey friend, I'm RantBot."
     puts "Tell me how you feel and I'll make your day better!\n"
@@ -56,13 +54,14 @@ class RantBot
 
   def help
     puts "\nRantbot accepts the following commands:"
-    puts "---------------------------------------"
-    puts "- off     : turns off Rantbot"
-    puts "- help    : displays this help menu"
-    puts "- rant    : displays your entire rant"
-    puts "- look    : look at RantBot"
-    puts "- export  : exports your rant to a text file"
-    puts "- insults : shows you what you deserve..."
+    puts "-------------------------------------------------------------"
+    puts "- off             : turns off Rantbot"
+    puts "- help            : displays this help menu"
+    puts "- rant            : displays your entire rant"
+    puts "- look            : look at RantBot"
+    puts "- insults         : shows you what you deserve..."
+    puts "- export rant     : exports your rant to a text file"
+    puts "- export insults  : exports RantBot's insults to a text file"
   end
 
   def show_love
@@ -113,19 +112,16 @@ class RantBot
     Launchy.open("#{@playlist_link}")
   end
 
-  def export
+  def export_rant
     if @rants.count > 0
-      File.open('./rants/my-rants.txt', 'w') do |file|
+      File.open('./exported-files/rant.txt', 'w') do |file|
         file.puts "\n*---------------------*"
         file.puts "│      Your Rant      │"
         file.puts "*---------------------*\n\n"
         @rants.each do |rant|
             file.print "#{rant.capitalize}. "
         end
-        file.puts "\n"
-        puts "\nExporting...\n\n"
-        sleep(SLEEP_DURATION)
-        puts "All done!"
+        export_text
       end
     else
       puts "\nThere is nothing to export yet."
@@ -156,14 +152,6 @@ class RantBot
     puts "\n#{insult}"
   end
 
-  def get_user_input
-    gets.strip.downcase.gsub(/[!?.,;:]$/, '')
-  end
-
-  def get_random_num
-    rand(1..6)
-  end
-
   def display_insults
     if @insults.count > 0
       puts "\n*---------------------------------*"
@@ -177,8 +165,20 @@ class RantBot
     end
   end
 
-  def get_sentiment(input)
-    @analyzer.get_sentiment(input)
+  def export_insults
+    if @insults.count > 0
+      File.open('./exported-files/insults.txt', 'w') do |file|
+        file.puts "\n*---------------------------------*"
+        file.puts "│    Just In Case You Forgot...   │"
+        file.puts "*---------------------------------*\n\n"
+        @insults.each do |insult|
+          file.puts "- #{insult}\n\n"
+        end
+        export_text
+      end
+    else
+      puts "\nThere is nothing to export yet."
+    end
   end
 
   def look_at_rantbot
@@ -187,6 +187,20 @@ class RantBot
     puts '              ["]    '
     puts '             /[♥]\   '
     puts "              ] [    - #{quote}"
+  end
+
+  def export_text
+    puts "\nExporting...\n\n"
+    sleep(SLEEP_DURATION)
+    puts "All done!"
+  end
+
+  def get_user_input
+    gets.strip.downcase.gsub(/[!?.,;:]+$/, '')
+  end
+
+  def get_random_num
+    rand(1..6)
   end
 
   def off
