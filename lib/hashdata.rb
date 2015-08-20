@@ -3,7 +3,8 @@ module HashData
     def return_gif_hash
       gifs = { :cats => ["http://cdn.newadnetwork.com/sites/prod/files/uploads/joellec/expedition.gif",
                           "http://i.imgur.com/v5NjWGk.gif",
-                          "https://s-media-cache-ak0.pinimg.com/originals/fb/fe/ef/fbfeef7116a928b29a92bc4bd38bfd49.gif"],
+                          "https://s-media-cache-ak0.pinimg.com/originals/fb/fe/ef/fbfeef7116a928b29a92bc4bd38bfd49.gif",
+                          "http://33.media.tumblr.com/e035a79eea0ab5fb1f6816b3e1666b58/tumblr_nq1ts4eCaa1resp2ko1_400.gif"],
                :dogs => ["http://static.tumblr.com/q8dfwso/cTOm7x5ih/puppies.gif",
                           "http://33.media.tumblr.com/tumblr_me1154L3aY1r67nlm.gif",
                           "http://mtv.mtvnimages.com/uri/mgid:file:http:shared:mtv.com/news/wp-content/uploads/2015/03/cutepuppy-1426855748.gif"],
